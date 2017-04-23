@@ -6,7 +6,8 @@
 #ifndef MIN_PRIORITY_QUEUE
 #define MIN_PRIORITY_QUEUE 1
 #include "seqLinearList.hpp"
-#include <climits>
+
+using namespace std;
 
  namespace cs202{
  	
@@ -21,7 +22,7 @@
 
 
  		// Primary container used in MinPriorityQueue
- 		seqLinearList<T> _heap;
+ 		LinearList<T> _heap;
  		int _heapSize;
 
  		// heapifies the heap at position pos 
@@ -37,6 +38,9 @@
  		inline int right_child(const size_t& pos);
 
  		inline void exchange(T& a, T& b);
+
+ 		// heap_decrease_key function
+ 		void heap_decrease_key(const size_t& pos);
 
  	public:
  		// default constructor
@@ -63,15 +67,12 @@
 
  		// check if MinPriorityQueue is empty
  		inline bool empty();
-
- 		// heap_decrease_key function
- 		void heap_decrease_key(const size_t& pos);
  	};
 
  	template<class T>
  	MinPriorityQueue<T>::MinPriorityQueue(){
 
- 		_heapSize.resize(11);
+ 		_heap.resize(11);
  		_heapSize = 0;
  	}
 
@@ -100,33 +101,24 @@
 	template<class T>
 	int MinPriorityQueue<T>::parent(const size_t& pos){
 		
-		if(pos/2 < 1)
-			return pos/2;
-		else
-			return INT_MAX;
+		return (pos - 1)/2;
 	}
 
 	template<class T>
 	int MinPriorityQueue<T>::left_child(const size_t& pos){
 		
-		if(2*pos <= _heapSize)
-			return 2*pos;
-		else
-			return INT_MAX;
+		return 2*pos + 1;
 	}
 
 	template<class T>
 	int MinPriorityQueue<T>::right_child(const size_t& pos){
 		
-		if(2*pos + 1 <= _heapSize)
-			return 2*pos + 1;
-		else
-			return INT_MAX;
+		return 2*(pos + 1);
 	}
 
 	template<class T>
 	T MinPriorityQueue<T>::minimum(){
-		if(_heapSize)
+		if(!empty())
 			return _heap[0];
 		else
 			throw "Queue is empty";
@@ -134,8 +126,14 @@
 
 	template<class T>
 	T MinPriorityQueue<T>::extract_min(){
-		if(_heapSize){
+		if(!empty()){
 			T min = _heap[0];
+			_heap[0] = _heap[_heapSize - 1];
+			_heapSize--;
+
+			if(!empty())
+				heapify(0);
+
 			return min;
 		}
 		else
@@ -154,45 +152,44 @@
 	template<class T>
 	void MinPriorityQueue<T>::insert(const T& a){
 
-		_heapSize++;
-
-		_heap[_headSize] = a;
-
+		_heap[_heapSize] = a;
 		heap_decrease_key(_heapSize);
+		_heapSize++;
 	}
 
 	template<class T>
 	void MinPriorityQueue<T>::heap_decrease_key(const size_t& pos){
 
-		if(pos < _heapSize)
-			return;
-
+		int par = parent(pos);
 		int i = pos;
 
-		int parent = parent(i);
-
-		while(i > 1 && _heap[parent] > _heap[i]){
+		while(i > 0 && _heap[par] > _heap[i]){
 			
-			exchange(_heap[i], _heap[parent]);
+			exchange(_heap[i], _heap[par]);
 
-			i = parent;
-			parent = parent(i); 
+			i = par;
+			par = parent(i); 
 		}
 	}
 
 	template<class T>
 	void MinPriorityQueue<T>::heapify(const size_t& pos){
 
-		if(pos >= _heapSize)
-			return;
-		
-		int i = pos;
-		int l = left_child(i), r = right_child(i);
+		int l = left_child(pos), r = right_child(pos);
+		int smallest;
 
-		11
+		if(l < _heapSize && _heap[l] < _heap[pos])
+			smallest = l;
+		else
+			smallest = pos;
 
-		
+		if(r < _heapSize && _heap[r] < _heap[smallest])
+			smallest = r;
 
+		if(smallest != pos){
+			exchange(_heap[pos], _heap[smallest]);
+			heapify(smallest);
+		}
 	}
 
 	template<class T>
@@ -203,12 +200,5 @@
 		 b = a;
 		 a = tmp; 
 	}
-
-
-
-
-
-
-
- 	
+}	
 #endif 
