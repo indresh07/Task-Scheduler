@@ -91,43 +91,35 @@ int main(int argc, char* argv[]){
 
 		totalDelay += delayTime;
 
-		if(queue.empty()){
-			queue.insert(request(ID, burstTime, delayTime, priority));
-			totalBurst += burstTime; 
-		} 
-		else{
+		cout<<"\nID\tBurst Time\tDelay Time\tPriority\tStatus\n";
 
+		while(!queue.empty()){
 			d = queue.minimum();
+			
+			if(d.burstTime <= totalDelay){
 
-			if(d.burstTime <= totalDelay)
-				cout<<"\nID\tBurst Time\tDelay Time\tPriority\tStatus\n";
+				d = queue.extract_min();
+				d.status = "Completed";
 
-			while(!queue.empty() && d.burstTime <= totalDelay){
-				d = queue.minimum();
-				
-				if(d.burstTime <= totalDelay){
+				totalDelay -= d.burstTime;
+				totalBurst -= d.burstTime;
 
-					d = queue.extract_min();
-					d.status = "Completed";
+				display(d);
+			}
+			else
+				break;
+		}
 
-					totalDelay -= d.burstTime;
-					totalBurst -= d.burstTime;
-
-					display(d);
-				}
+		if(totalBurst >= totalDelay)
+			if(!queue.empty() && queue.minimum().priority > priority){
+				queue.minimum().status = "Pre-empted";
+				queue.minimum().burstTime -= totalDelay;
+				totalBurst -= totalDelay;
+				totalDelay = 0;
 			}
 
-			if(totalBurst >= totalDelay)
-				if(queue.minimum().priority > priority){
-					queue.minimum().status = "Pre-empted";
-					queue.minimum().burstTime -= totalDelay;
-					totalBurst -= totalDelay;
-					totalDelay = 0;
-				}
-
-			queue.insert(request(ID, burstTime, delayTime, priority));
-			totalBurst += burstTime;
-		}
+		queue.insert(request(ID, burstTime, delayTime, priority));
+		totalBurst += burstTime;
 
 		queue.minimum().status = "In Progress";
 		display(queue);

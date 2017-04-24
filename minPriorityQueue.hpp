@@ -1,7 +1,7 @@
-// Purpose: 
-// Author: 
-// Date of Creation: 
-// Bugs:
+// Purpose: To create a minimum priority queue usign heap
+// Author: Indresh Kumar Gupta
+// Date of Creation: 23/04/17
+// Bugs: None
 
 #ifndef MIN_PRIORITY_QUEUE
 #define MIN_PRIORITY_QUEUE 1
@@ -86,7 +86,7 @@ using namespace std;
 		for(int i = 0; i < _heapSize; i++)
 			_heap.push_back(v.at(i));
 
-		for(int i = 0; i < _heapSize/2; i++)
+		for(int i = _heapSize/2; i >= 0 ; i--)
 			heapify(i);
 	}
 
@@ -158,7 +158,10 @@ using namespace std;
 		_heapSize = v.size();
 
 		for(int i = 0; i < _heapSize; i++)
-			insert(v[i]);
+			_heap[i] = v[i];
+
+		for(int i = _heapSize; i >= 0; i--)
+			heapify(i);
 	}
 
 	template<class T>
