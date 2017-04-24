@@ -7,34 +7,34 @@
 using namespace std;
 using namespace cs202;
 
-class device{
+class request{
 	public:
-		int id;
+		int deviceID;
 		int burstTime;
 		int delayTime;
 		int priority;
 		std::string status;
 
 
-		device(){};
+		request(){};
 
-		device(int Id, int BT, int DT, int p){
-			id = Id;
+		request(int Id, int BT, int DT, int p){
+			deviceID = Id;
 			burstTime = BT;
 			delayTime = DT;
 			priority = p;
 			status = "Queued"; 
 		}
 
-		bool operator<(const device& d){
+		bool operator<(const request& d){
 			if(priority < d.priority)
 				return true;
 			else
 				return false;
 		}
 
-		void operator=(device d){
-			id = d.id;
+		void operator=(request d){
+			deviceID = d.deviceID;
 			burstTime = d.burstTime;
 			delayTime = d.delayTime;
 			priority = d.priority;
@@ -42,16 +42,16 @@ class device{
 		}
 };
 
-void display(const device& d){
+void display(const request& d){
 
-	cout<<d.id<<"\t";
+	cout<<d.deviceID<<"\t";
 	cout<<d.burstTime<<"\t\t";
 	cout<<d.delayTime<<"\t\t";
 	cout<<d.priority<<"\t\t";
 	cout<<d.status<<"\n";
 }
 
-void display(MinPriorityQueue<device> queue){
+void display(MinPriorityQueue<request> queue){
 
 	cout<<"\nTasks in processor";
 	cout<<"\nID\tBurst Time\tDelay Time\tPriority\tStatus\n";
@@ -68,9 +68,9 @@ void display(MinPriorityQueue<device> queue){
 int main(int argc, char* argv[]){
 
 	system("clear");
-	MinPriorityQueue<device> queue;
+	MinPriorityQueue<request> queue;
 	int ID, burstTime, delayTime, priority;
-	device d;
+	request d;
 	int totalBurst = 0, totalDelay = 0;
 	char end;
 
@@ -92,7 +92,7 @@ int main(int argc, char* argv[]){
 		totalDelay += delayTime;
 
 		if(queue.empty()){
-			queue.insert(device(ID, burstTime, delayTime, priority));
+			queue.insert(request(ID, burstTime, delayTime, priority));
 			totalBurst += burstTime; 
 		} 
 		else{
@@ -125,7 +125,7 @@ int main(int argc, char* argv[]){
 					totalDelay = 0;
 				}
 
-			queue.insert(device(ID, burstTime, delayTime, priority));
+			queue.insert(request(ID, burstTime, delayTime, priority));
 			totalBurst += burstTime;
 		}
 
