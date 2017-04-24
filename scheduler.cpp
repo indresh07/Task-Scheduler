@@ -53,9 +53,6 @@ void display(const request& d){
 
 void display(MinPriorityQueue<request> queue){
 
-	cout<<"\nTasks in processor";
-	cout<<"\nID\tBurst Time\tDelay Time\tPriority\tStatus\n";
-
 	while(!queue.empty()){
 		display(queue.extract_min());
 	}
