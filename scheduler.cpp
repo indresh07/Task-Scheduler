@@ -42,20 +42,22 @@ class device{
 		}
 };
 
+void display(const device& d){
+
+	cout<<d.id<<"\t";
+	cout<<d.burstTime<<"\t\t";
+	cout<<d.delayTime<<"\t\t";
+	cout<<d.priority<<"\t\t";
+	cout<<d.status<<"\n";
+}
+
 void display(MinPriorityQueue<device> queue){
 
-	device d;
-
+	cout<<"\nTasks in processor";
 	cout<<"\nID\tBurst Time\tDelay Time\tPriority\tStatus\n";
 
 	while(!queue.empty()){
-		d = queue.extract_min();
-
-		cout<<d.id<<"\t";
-		cout<<d.burstTime<<"\t\t";
-		cout<<d.delayTime<<"\t\t";
-		cout<<d.priority<<"\t\t";
-		cout<<d.status<<"\n";
+		display(queue.extract_min());
 	}
 
 	cout<<"\n";
@@ -65,6 +67,7 @@ void display(MinPriorityQueue<device> queue){
 
 int main(int argc, char* argv[]){
 
+	system("clear");
 	MinPriorityQueue<device> queue;
 	int ID, burstTime, delayTime, priority;
 	device d;
@@ -73,7 +76,7 @@ int main(int argc, char* argv[]){
 
 	while(1){
 
-		cout<<"\nEnter process details\n";
+		cout<<"\nEnter task details\n";
 		cout<<"ID : ";
 		cin>>ID;
 
@@ -92,39 +95,38 @@ int main(int argc, char* argv[]){
 			queue.insert(device(ID, burstTime, delayTime, priority));
 			totalBurst += burstTime; 
 		} 
-		else{ 
-			if(totalBurst >= totalDelay){
+		else{
 
-			if(queue.minimum().priority > priority){
-				queue.minimum().status = "Paused and Queued";
-				queue.minimum().burstTime -= totalDelay;
-				totalBurst -= totalDelay;
+			d = queue.minimum();
+
+			if(d.burstTime <= totalDelay)
+				cout<<"\nID\tBurst Time\tDelay Time\tPriority\tStatus\n";
+
+			while(!queue.empty() && d.burstTime <= totalDelay){
+				d = queue.minimum();
+				
+				if(d.burstTime <= totalDelay){
+
+					d = queue.extract_min();
+					d.status = "Completed";
+
+					totalDelay -= d.burstTime;
+					totalBurst -= d.burstTime;
+
+					display(d);
+				}
 			}
+
+			if(totalBurst >= totalDelay)
+				if(queue.minimum().priority > priority){
+					queue.minimum().status = "Pre-empted";
+					queue.minimum().burstTime -= totalDelay;
+					totalBurst -= totalDelay;
+					totalDelay = 0;
+				}
 
 			queue.insert(device(ID, burstTime, delayTime, priority));
 			totalBurst += burstTime;
-
-			}
-			else if(totalBurst < totalDelay){
-
-				cout<<"\nID\tBurst Time\tDelay Time\tPriority\tStatus\n";
-				while(!queue.empty()){
-
-					d = queue.extract_min();
-
-					totalDelay -= d.delayTime;
-					totalBurst -= d.burstTime;
-
-					cout<<d.id<<"\t";
-					cout<<d.burstTime<<"\t\t";
-					cout<<d.delayTime<<"\t\t";
-					cout<<d.priority<<"\t\t";
-					cout<<"Completed\n";
-				}
-
-				queue.insert(device(ID, burstTime, delayTime, priority));
-				totalBurst += burstTime;
-			}
 		}
 
 		queue.minimum().status = "In Progress";
@@ -139,12 +141,9 @@ int main(int argc, char* argv[]){
 			while(!queue.empty()){
 
 				d = queue.extract_min();
+				d.status = "Completed";
 
-				cout<<d.id<<"\t";
-				cout<<d.burstTime<<"\t\t";
-				cout<<d.delayTime<<"\t\t";
-				cout<<d.priority<<"\t\t";
-				cout<<"Completed\n";
+				display(d);
 			}
 
 			exit(EXIT_SUCCESS);			
