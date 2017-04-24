@@ -49,11 +49,14 @@ using namespace std;
  		// construct a heap from the elements of a seqLinearList
  		MinPriorityQueue(const LinearList<T>& v);
 
+ 		//copy constructor
+ 		MinPriorityQueue(MinPriorityQueue<T>& q);
+
  		// insert a value to the heap
  		void insert(const T& a);
 
  		// get the minimum element from the heap
- 		inline T minimum();
+ 		inline T& minimum();
 
  		// return the minimum element from the heap and remove it
  		// as well
@@ -79,10 +82,20 @@ using namespace std;
  	template<class T>
 	MinPriorityQueue<T>::MinPriorityQueue(const LinearList<T>& v){
 		_heapSize = v.size();
-		_heap = v;
+		
+		for(int i = 0; i < _heapSize; i++)
+			_heap.push_back(v.at(i));
 
-		for(int i = 1; i <= _heapSize/2; i++)
+		for(int i = 0; i < _heapSize/2; i++)
 			heapify(i);
+	}
+
+ 	template<class T>
+	MinPriorityQueue<T>::MinPriorityQueue(MinPriorityQueue<T>& q){
+		_heapSize = q._heapSize;
+		
+		for(int i = 0; i <= _heapSize; i++)
+			_heap.push_back(q._heap.at(i));
 	}
 
 	template<class T>
@@ -117,7 +130,7 @@ using namespace std;
 	}
 
 	template<class T>
-	T MinPriorityQueue<T>::minimum(){
+	T& MinPriorityQueue<T>::minimum(){
 		if(!empty())
 			return _heap[0];
 		else
@@ -143,10 +156,9 @@ using namespace std;
 	template<class T>
 	void MinPriorityQueue<T>::build_heap(const LinearList<T>& v){
 		_heapSize = v.size();
-		_heap = v;
 
-		for(int i = 0; i < _heapSize/2; i++)
-			heapify(i);
+		for(int i = 0; i < _heapSize; i++)
+			insert(v[i]);
 	}
 
 	template<class T>
@@ -163,7 +175,7 @@ using namespace std;
 		int par = parent(pos);
 		int i = pos;
 
-		while(i > 0 && _heap[par] > _heap[i]){
+		while(i > 0 && _heap[i] < _heap[par]){
 			
 			exchange(_heap[i], _heap[par]);
 

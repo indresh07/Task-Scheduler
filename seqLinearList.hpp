@@ -101,19 +101,7 @@ namespace cs202 {
         iterator end(){
             return &buffer_[size_];
         }
-  };
-
-
-    /*template<class T>iterator LinearList<T> :: begin(){
-        iterator it(&buffer_[0]);
-        return it;
-    }
-
-    /*template<class T>iterator LinearList<T> :: end(){
-        return iterator(&buffer_[size_ - 1]);
-    }*/
-
-    
+  };  
 
     template<class T> LinearList<T> :: LinearList(){
         buffer_=new T[1];
