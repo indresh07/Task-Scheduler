@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdlib.h>
 
-#include "minPriorityQueue.hpp"
+#include "../include/minPriorityQueue.hpp"
 
 using namespace std;
 using namespace cs202;

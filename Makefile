@@ -1,11 +1,12 @@
-all: MPQmain.o scheduler.o
-	g++ -w -o MPQ MPQmain.o -Wno-deprecated
-	g++ -w -o scheduler scheduler.o -Wno-deprecated 
+all: obj/MPQ_driver.o obj/scheduler.o
+	g++ -w -o bin/MPQ_driver obj/MPQ_driver.o -Wno-deprecated
+	g++ -w -o bin/scheduler obj/scheduler.o -Wno-deprecated 
 
-scheduler.o: scheduler.cpp
-	g++ -c scheduler.cpp -Wno-deprecated
+obj/scheduler.o: src/scheduler.cpp
+	g++ -c -o obj/scheduler.o src/scheduler.cpp -Wno-deprecated
 
-MPQmain.o: MPQmain.cpp
-	g++ -c MPQmain.cpp -Wno-deprecated
+obj/MPQ_driver.o: src/MPQ_driver.cpp
+	g++ -c -o obj/MPQ_driver.o src/MPQ_driver.cpp -Wno-deprecated
 clean:
-	rm -f *.o
+	rm -f bin/*
+	rm -f obj/*
